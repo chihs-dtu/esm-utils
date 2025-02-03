@@ -32,4 +32,4 @@ export CUDA_VISIBLE_DEVICES=1
 #source /home/people/chihs/protein_embed/esm2_utilities/env/bin/activate
 
 # run training
-/home/people/chihs/miniconda3/envs/esm2/bin/python performance_assess.py /home/people/chihs/protein_embed/esm2_utilities/chunxu_data/filtered_isoforms_AA.fasta
+/home/people/chihs/miniconda3/envs/esm2/bin/python run.py /home/people/chihs/protein_embed/esm2_utilities/chunxu_data/filtered_isoforms_AA.fasta
