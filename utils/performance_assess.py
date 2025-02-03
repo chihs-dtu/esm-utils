@@ -7,7 +7,7 @@ import sys
 def get_gpu_usage():
     # Run 'nvidia-smi' to get GPU stats (only once)
     result = subprocess.run(
-        ['nvidia-smi', '--query-gpu=umemory.used', '--format=csv,noheader'],
+        ['nvidia-smi', '--query-gpu=memory.used', '--format=csv,noheader,nounits'],
         capture_output=True, text=True
     )
     
