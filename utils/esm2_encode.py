@@ -2,6 +2,7 @@
 import sys
 from pathlib import Path
 import pickle
+import time
 import torch
 import esm
 import numpy as np
@@ -52,8 +53,10 @@ def get_esm2_encs(data):
         # if not just add as is             
         else: sequence_representations.append(token_representations[i, :, :])
 
-    for s in sequence_representations: print(f"ESM-2 representation size of sequence  after removing padding: {s.size()}") 
+    for s in sequence_representations: 
+        print(f"ESM-2 representation size of sequence  after removing padding: {s.size()}") 
 
+    time.sleep(0.2)
     return sequence_representations, attentions
     
 

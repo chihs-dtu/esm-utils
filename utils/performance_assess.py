@@ -7,8 +7,8 @@ import sys
 def get_gpu_usage():
     # Run 'nvidia-smi' to get GPU stats (only once)
     result = subprocess.run(
-        ['nvidia-smi', '--query-gpu=utilization.gpu,memory.total,memory.used,memory.free', '--format=csv,noheader'],
-        stdout=subprocess.PIPE
+        ['nvidia-smi', '--query-gpu=umemory.used', '--format=csv,noheader'],
+        capture_output=True, text=True
     )
     
     # Parse the output to include units
@@ -50,7 +50,7 @@ def main():
     print("\nPerformance Stats:")
     print(f"Execution Time: {elapsed_time:.2f} seconds")
     print(f"CPU Usage: {cpu_usage}%")
-    print(f"GPU Usage (util, total.mem, used.mem, free.mem): {gpu_usage}")
+    print(f"GPU Memory Usage: {gpu_usage}")
     print(f"Memory Usage: {memory_usage:.2f} MB")
 
 if __name__ == "__main__":
