@@ -10,15 +10,14 @@ def get_gpu_usage():
         ['nvidia-smi', '--query-gpu=memory.used', '--format=csv,noheader,nounits'],
         capture_output=True, text=True
     )
-    
-    # Parse the output to include units
-    gpu_usage = int(result.stdout.strip())
+
+    gpu_usage = result.stdout.strip().split()[0]
 
     return gpu_usage
 
 def get_cpu_usage():
     # Get the current CPU usage (percentage)
-    return psutil.cpu_percent(interval=1)
+    return psutil.cpu_percent()
 
 def get_memory_usage():
     # Get memory usage (in MB)

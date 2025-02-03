@@ -39,7 +39,7 @@ logging.basicConfig(
 
 # Create a logger instance
 logger = logging.getLogger(__name__)
-logger.info(">>length(bp),time(s),cpu(%),gpu_mem,mem(MB)")
+logger.info(">>batch_id,length(bp),time(s),cpu(%),gpu_mem,mem(MB)")
 
 
 # read fasta into list tuple format: (acc1, seq1), (acc2, seq2)...] 
@@ -76,7 +76,8 @@ else:
             
             # Track the start time and gpu usage
             start_time = time.time()
-            gpu_usage_start = get_gpu_usage()
+            gpu_mem_start = get_gpu_usage()
+            cpu_mem_start = get_memory_usage()
 
             # Run the process
             esm2_encs, attentions = get_esm2_encs(filtered_list) 
@@ -89,20 +90,23 @@ else:
             if DO_ASSESS_LEN:
                 # Get CPU, GPU, and memory usage
                 cpu_usage = get_cpu_usage()
-                gpu_usage_end = get_gpu_usage()
-                memory_usage = get_memory_usage()
-                logger.info(">>{:.2f},{},{},{},{:.2f}".format(len(accs_seqs[0][1]),
+                gpu_mem_end = get_gpu_usage()
+                cpu_mem_end = get_memory_usage()
+
+                logger.info(">>batch_{},{},{},{},{},{:.2f}".format(
+                                                    i_batch,
+                                                    len(accs_seqs[0][1]),
                                                     elapsed_time, 
                                                     cpu_usage, 
-                                                    gpu_usage_end - gpu_usage_start,
-                                                    memory_usage))
+                                                    gpu_mem_end - gpu_mem_start,
+                                                    cpu_mem_end - cpu_mem_start))
             else:
                 with open(f"{directory}/{outname}/esm2enc/{outname}_esm2enc_batch{i_batch}.pickle", "wb") as outfile: 
                     pickle.dump(esm2_encs, outfile) 
                 
                 with open(f"{directory}/{outname}/attention/{outname}_attention_batch{i_batch}.pickle", "wb") as outfile: 
                     pickle.dump(attentions, outfile) 
-            print("-----------------------------", i_batch, "-"*24)
+
             i_batch += 1
     
     if not DO_ASSESS_LEN:
