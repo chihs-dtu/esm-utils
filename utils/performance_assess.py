@@ -11,7 +11,7 @@ def get_gpu_usage():
         capture_output=True, text=True
     )
 
-    gpu_usage = result.stdout.strip().split()[0]
+    gpu_usage = int(result.stdout.strip().split()[0])
 
     return gpu_usage
 
