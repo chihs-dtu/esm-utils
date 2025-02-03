@@ -39,7 +39,7 @@ logging.basicConfig(
 
 # Create a logger instance
 logger = logging.getLogger(__name__)
-logger.inf(">>length(bp),time(s),cpu(%),gpu_mem,mem(MB)")
+logger.info(">>length(bp),time(s),cpu(%),gpu_mem,mem(MB)")
 
 
 # read fasta into list tuple format: (acc1, seq1), (acc2, seq2)...] 

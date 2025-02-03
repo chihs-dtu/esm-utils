@@ -12,7 +12,7 @@ def get_gpu_usage():
     )
     
     # Parse the output to include units
-    gpu_usage = result.stdout.decode('utf-8')
+    gpu_usage = int(result.stdout.strip())
 
     return gpu_usage
 
