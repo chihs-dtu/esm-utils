@@ -11,7 +11,12 @@ from utils.esm2_encode import  get_esm2_encs, read_acc_seqs_from_fasta
 from utils.aggregate_results import aggregate_tensors
 from utils.performance_assess import get_cpu_usage, get_gpu_usage, get_memory_usage
 
+
+# Set parameters
 DO_ASSESS_LEN = True
+SAVE_FILE = True
+batch_size = 1 if DO_ASSESS_LEN else 10
+
 
 if len(sys.argv) < 2:
     print("Usage: python run.py <path_to_your_fasta_file>")
@@ -20,14 +25,14 @@ if len(sys.argv) < 2:
 file_path = sys.argv[1]
 print('Processing:', file_path)
 
-# set work directory this file's directory location
+# find the work directory this file's directory location
 directory = os.path.dirname(os.path.abspath(file_path))
-
 
 # Get current date in the desired format
 current_date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
 
 # Configure the logger
+
 logging.basicConfig(
     level=logging.DEBUG,  # Set the minimum log level
     format="%(asctime)s - %(levelname)s - %(message)s",  # Define the log format
@@ -55,7 +60,6 @@ else:
     
     i_batch = 0
     offset = -1
-    batch_size = 1 if DO_ASSESS_LEN else 10
 
     while True:
         accs_seqs, offset = read_acc_seqs_from_fasta(file_path, offset, batch_size=batch_size)
@@ -76,12 +80,10 @@ else:
             
             # Track the start time and gpu usage
             start_time = time.time()
-            gpu_mem_start = get_gpu_usage()
             cpu_mem_start = get_memory_usage()
 
             # Run the process
-            esm2_encs, attentions = get_esm2_encs(filtered_list) 
-            torch.cuda.synchronize()
+            esm2_encs, attentions, gpu_mem = get_esm2_encs(filtered_list) 
 
             # Track the end time
             end_time = time.time()
@@ -90,7 +92,6 @@ else:
             if DO_ASSESS_LEN:
                 # Get CPU, GPU, and memory usage
                 cpu_usage = get_cpu_usage()
-                gpu_mem_end = get_gpu_usage()
                 cpu_mem_end = get_memory_usage()
 
                 logger.info(">>batch_{},{},{},{},{},{:.2f}".format(
@@ -98,7 +99,7 @@ else:
                                                     len(accs_seqs[0][1]),
                                                     elapsed_time, 
                                                     cpu_usage, 
-                                                    gpu_mem_end - gpu_mem_start,
+                                                    gpu_mem,
                                                     cpu_mem_end - cpu_mem_start))
             else:
                 with open(f"{directory}/{outname}/esm2enc/{outname}_esm2enc_batch{i_batch}.pickle", "wb") as outfile: 
@@ -109,7 +110,7 @@ else:
 
             i_batch += 1
     
-    if not DO_ASSESS_LEN:
+    if not SAVE_FILE:
         # Aggregate the batches into a single file
         for out_type in ["attention", "esm2enc"]:
             input_files = f"{directory}/{outname}/{out_type}/"

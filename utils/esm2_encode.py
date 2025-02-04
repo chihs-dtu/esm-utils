@@ -6,6 +6,8 @@ import time
 import torch
 import esm
 import numpy as np
+
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
@@ -24,6 +26,7 @@ def get_esm2_encs(data):
     model = model.to(device)
     batch_converter = alphabet.get_batch_converter()
     model.eval()
+    
     batch_labels, batch_strs, batch_tokens = batch_converter(data)
     batch_tokens = batch_tokens.to(device)
     batch_lens = (batch_tokens != alphabet.padding_idx).sum(1)
@@ -55,9 +58,11 @@ def get_esm2_encs(data):
 
     for s in sequence_representations: 
         print(f"ESM-2 representation size of sequence  after removing padding: {s.size()}") 
+    
+    gpu_mem = torch.cuda.max_memory_allocated(device=None) / (1024**2)
+    torch.cuda.reset_peak_memory_stats(device=None)
 
-    time.sleep(0.2)
-    return sequence_representations, attentions
+    return sequence_representations, attentions, gpu_mem
     
 
 def read_acc_seqs_from_fasta(infile_path, start_offset=-1, batch_size=50):

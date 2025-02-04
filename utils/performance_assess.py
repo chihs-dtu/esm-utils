@@ -1,8 +1,14 @@
 import time
 import psutil
+import GPUtil
 import subprocess
 import os
 import sys
+
+
+def get_gpu_usage_new():
+    gpu = GPUtil.getGPUs()[0]
+    return gpu.memoryFree
 
 def get_gpu_usage():
     # Run 'nvidia-smi' to get GPU stats (only once)
