@@ -6,8 +6,9 @@ import time
 import torch
 import esm
 import numpy as np
+import logging
 
-
+logger = logging.getLogger(__name__)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
@@ -19,8 +20,6 @@ def get_esm2_encs(data):
     output: sequence_representations: list of esm2 torch tensors, same order data: [esm2_enc1, esm2_enc2...]  
     
     """
-
-
     # load ESM-2 model
     model, alphabet = esm.pretrained.esm2_t33_650M_UR50D()
     model = model.to(device)
@@ -34,7 +33,7 @@ def get_esm2_encs(data):
     # extract per-residue representations
     with torch.no_grad(): results = model(batch_tokens, repr_layers=[33], need_head_weights=True, return_contacts=True)
     token_representations = results["representations"][33]
-    print(f"ESM-2 representation size of sequence batch with padding: {token_representations.size()}")
+    logger.info(f"ESM-2 representation size of sequence batch with padding: {token_representations.size()}")
     
     # omitting embedding from padding, as well as start and end tokens
     sequence_representations = []
@@ -57,7 +56,7 @@ def get_esm2_encs(data):
         else: sequence_representations.append(token_representations[i, :, :])
 
     for s in sequence_representations: 
-        print(f"ESM-2 representation size of sequence  after removing padding: {s.size()}") 
+        logger.info(f"ESM-2 representation size of sequence  after removing padding: {s.size()}") 
     
     gpu_mem = torch.cuda.max_memory_allocated(device=None) / (1024**2)
     torch.cuda.reset_peak_memory_stats(device=None)
@@ -115,7 +114,7 @@ def read_acc_seqs_from_fasta(infile_path, start_offset=-1, batch_size=50):
             # Get last sequence
             sequences.append(seq)
     except FileNotFoundError:
-        print(f"File not found: {infile_path}")
+        logger.info(f"File not found: {infile_path}")
         return 0
     
     accs_and_sequences = tuple( zip(accs, sequences) )
@@ -137,7 +136,7 @@ def read_acc_seqs_from_fasta_old(infile_path):
 
     infile = Path(infile_path)
     if not infile.is_file():
-        print(f"The input file was invalid. Invalid file was {infile}")
+        logger.info(f"The input file was invalid. Invalid file was {infile}")
 
     infile = open(infile, "r")
     readfile = infile.readlines()

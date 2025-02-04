@@ -1,6 +1,9 @@
 import os,sys
 import pickle
+import logging
 import re
+
+logger = logging.getLogger(__name__)
 
 def extract_batch_number(filename):
     """
@@ -50,10 +53,10 @@ def aggregate_tensors(pickle_dir, output_file):
             if isinstance(tensor_list, list):
                 all_tensors.extend(tensor_list)  # Append the tensors to the final list
             else:
-                print(f"Warning: Skipping file {filename} because it doesn't contain a list.")
+                logger.info(f"Warning: Skipping file {filename} because it doesn't contain a list.")
     
     # Save the aggregated tensors to the output pickle file
     with open(output_file, 'wb') as file:
         pickle.dump(all_tensors, file)
     
-    print(f"Aggregated {len(all_tensors)} tensors to {output_file}")
+    logger.info(f"Aggregated {len(all_tensors)} tensors to {output_file}")

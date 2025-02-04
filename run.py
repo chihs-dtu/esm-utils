@@ -21,18 +21,14 @@ batch_size = 1 if DO_ASSESS_LEN else 10
 if len(sys.argv) < 2:
     print("Usage: python run.py <path_to_your_fasta_file>")
     exit(1)
-
 file_path = sys.argv[1]
 print('Processing:', file_path)
-
 # find the work directory this file's directory location
 directory = os.path.dirname(os.path.abspath(file_path))
-
 # Get current date in the desired format
 current_date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
 
 # Configure the logger
-
 logging.basicConfig(
     level=logging.DEBUG,  # Set the minimum log level
     format="%(asctime)s - %(levelname)s - %(message)s",  # Define the log format
@@ -41,7 +37,6 @@ logging.basicConfig(
         logging.FileHandler(f"run_{current_date}.log", mode='w'),
         logging.StreamHandler()]
 )
-
 # Create a logger instance
 logger = logging.getLogger(__name__)
 logger.info(">>batch_id,length(bp),time(s),cpu(%),gpu_mem,mem(MB)")
@@ -78,11 +73,11 @@ else:
             if len(filtered_list) == 0:
                     continue
             
-            # Track the start time and gpu usage
+            # Track the start time and cpu usage
             start_time = time.time()
             cpu_mem_start = get_memory_usage()
 
-            # Run the process
+            # Run the process and record the gpu mem usage
             esm2_encs, attentions, gpu_mem = get_esm2_encs(filtered_list) 
 
             # Track the end time
@@ -101,7 +96,7 @@ else:
                                                     cpu_usage, 
                                                     gpu_mem,
                                                     cpu_mem_end - cpu_mem_start))
-            else:
+            if SAVE_FILE:
                 with open(f"{directory}/{outname}/esm2enc/{outname}_esm2enc_batch{i_batch}.pickle", "wb") as outfile: 
                     pickle.dump(esm2_encs, outfile) 
                 
@@ -110,7 +105,7 @@ else:
 
             i_batch += 1
     
-    if not SAVE_FILE:
+    if SAVE_FILE:
         # Aggregate the batches into a single file
         for out_type in ["attention", "esm2enc"]:
             input_files = f"{directory}/{outname}/{out_type}/"
