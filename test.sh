@@ -29,7 +29,9 @@ else
 			fi
 		fi
 	done
-	echo "Success!"
+	echo "***********************************"
+	echo "* Success!                        *"
+	echo "***********************************"
 else
 	echo "Error: Failed to run the script."
 fi
