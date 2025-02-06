@@ -38,7 +38,7 @@ def aggregate_tensors(pickle_dir, output_file):
         save_rds = True
     else:
         save_rds = False
-        
+
     # This will hold all the tensors in the order they appear
     all_tensors = []
     
@@ -67,7 +67,7 @@ def aggregate_tensors(pickle_dir, output_file):
     if save_rds:
         # Convert the list of lists to an R object (list of lists)
         r_list_of_lists = ro.ListVector(
-                            {f'tensor_{i}': ro.ListVector(all_tensors[i]) 
+                            {f'{i}': ro.ListVector(all_tensors[i]) 
                             for i in range(len(all_tensors))})
 
         # Save the list as an .rds file
