@@ -15,3 +15,11 @@ git clone https://github.com/chihs-dtu/esm-utils.git
 ```bash
 bash test.sh
 ```
+
+## Load JSON file into R
+```R
+library(jsonlite)
+
+attn <- fromJSON('attention.json')
+enc <- fromJSON('esm2enc.json')
+```
