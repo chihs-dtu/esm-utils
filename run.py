@@ -39,7 +39,8 @@ logging.basicConfig(
 )
 # Create a logger instance
 logger = logging.getLogger(__name__)
-logger.info(">>batch_id,length(bp),time(s),cpu(%),gpu_mem,mem(MB)")
+if DO_ASSESS_LEN:
+    logger.info(">>batch_id,length(bp),time(s),cpu(%),gpu_mem,mem(MB)")
 
 
 # read fasta into list tuple format: (acc1, seq1), (acc2, seq2)...] 
@@ -50,7 +51,9 @@ else:
     outname = file_path.rsplit('/',1)[1].rsplit('.')[0]
     if not os.path.exists(f"{directory}/{outname}"):
         os.mkdir(f"{directory}/{outname}")
+    if not os.path.exists(f"{directory}/{outname}/attention"):
         os.mkdir(f"{directory}/{outname}/attention/")
+    if not os.path.exists(f"{directory}/{outname}/esm2enc"):
         os.mkdir(f"{directory}/{outname}/esm2enc/")
     
     i_batch = 0
@@ -114,8 +117,7 @@ else:
             
             # Check if the output file was successfully created
             if os.path.exists(output_file):
-                for file in input_files:
-                    os.remove(file)
+                os.system(f"rm -rf {directory}/{outname}/{out_type}/")
                 logger.info(f"Original {out_type} files removed.")
             else:
                 logger.warning(f"Aggregation failed. Original {out_type} files were not removed.")
