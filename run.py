@@ -43,7 +43,7 @@ if not os.path.exists(args.input) and \
     logger.error("Invalid input fasta file.")
     exit(1)
 file_path = args.input
-logger.info('Processing:', file_path)
+logger.info(f"Processing: {file_path}")
 # Get the directory containing the input fasta file
 directory = os.path.dirname(os.path.abspath(file_path))
 
@@ -121,7 +121,7 @@ if SAVE_FILE:
     # Aggregate the batches into a single file
     for out_type in ["attention", "esm2enc"]:
         input_files = f"{directory}/{outname}/{out_type}/"
-        output_file = f"{directory}/{outname}/{out_type}.rds"
+        output_file = f"{directory}/{outname}/{out_type}.json"
         aggregate_tensors(input_files, output_file)
         
         # Check if the output file was successfully created
