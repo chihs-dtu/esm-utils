@@ -2,7 +2,7 @@ import os,sys
 import pickle
 import logging
 import re
-import rpy2.robjects as ro
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -34,10 +34,10 @@ def aggregate_tensors(pickle_dir, output_file):
     pickle_dir (str): The directory containing the pickle files.
     output_file (str): The path to the output pickle file.
     """
-    if output_file.endswith('.rds'):
-        save_rds = True
+    if output_file.endswith('.json'):
+        save_json = True
     else:
-        save_rds = False
+        save_json = False
 
     # This will hold all the tensors in the order they appear
     all_tensors = []
@@ -57,21 +57,17 @@ def aggregate_tensors(pickle_dir, output_file):
             
             # Ensure it's a list of tensors
             if isinstance(tensor_list, list):
-                if save_rds:
+                if save_json:
                     all_tensors.extend([x.tolist() for x in tensor_list])
                 else:
                     all_tensors.extend(tensor_list)
             else:
                 logger.info(f"Warning: Skipping file {filename} because it doesn't contain a list.")
     
-    if save_rds:
-        # Convert the list of lists to an R object (list of lists)
-        r_list_of_lists = ro.ListVector(
-                            {f'{i}': ro.ListVector(all_tensors[i]) 
-                            for i in range(len(all_tensors))})
-
-        # Save the list as an .rds file
-        ro.r['saveRDS'](r_list_of_lists, output_file)
+    if save_json:
+        # Save the aggregated tensors to the output json file
+        with open(output_file, 'w') as file:
+            json.dump(all_tensors, file)
     else:
         # Save the aggregated tensors to the output pickle file
         with open(output_file, 'wb') as file:
