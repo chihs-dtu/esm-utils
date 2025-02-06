@@ -1,25 +1,9 @@
 import time
 import psutil
-import GPUtil
 import subprocess
 import os
 import sys
 
-
-def get_gpu_usage_new():
-    gpu = GPUtil.getGPUs()[0]
-    return gpu.memoryFree
-
-def get_gpu_usage():
-    # Run 'nvidia-smi' to get GPU stats (only once)
-    result = subprocess.run(
-        ['nvidia-smi', '--query-gpu=memory.used', '--format=csv,noheader,nounits'],
-        capture_output=True, text=True
-    )
-
-    gpu_usage = int(result.stdout.strip().split()[0])
-
-    return gpu_usage
 
 def get_cpu_usage():
     # Get the current CPU usage (percentage)
@@ -48,14 +32,12 @@ def main():
 
     # Get CPU, GPU, and memory usage
     cpu_usage = get_cpu_usage()
-    gpu_usage = get_gpu_usage()
     memory_usage = get_memory_usage()
 
     # Print results
     print("\nPerformance Stats:")
     print(f"Execution Time: {elapsed_time:.2f} seconds")
     print(f"CPU Usage: {cpu_usage}%")
-    print(f"GPU Memory Usage: {gpu_usage}")
     print(f"Memory Usage: {memory_usage:.2f} MB")
 
 if __name__ == "__main__":

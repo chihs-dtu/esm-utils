@@ -11,7 +11,7 @@ conda env create -f environment.yml -n esm2
 ```bash
 git clone https://github.com/chihs-dtu/esm-utils.git
 ```
-* Test the environment with example data.
+* Test the environment with the example data.
 ```bash
-
+bash test.sh
 ```
