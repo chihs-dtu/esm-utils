@@ -10,10 +10,10 @@ fi
 
 # Run the script
 conda activate esm2
-if python run.py $INPUT_FILE; then
+if python run.py -n $INPUT_FILE; then
 	# Check the output files
 	for filename in esm2enc attention; do
-		if [ -f "${DIR_NAME}/${filename}.pickle" ]; then
+		if [ -f "${DIR_NAME}/${filename}.json" ]; then
 			# Check the dimension
 			if python -c '
 import json
