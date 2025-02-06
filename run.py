@@ -26,10 +26,10 @@ logger = logging.getLogger(__name__)
 
 # Set parameters
 parser = argparse.ArgumentParser()
+parser.add_argument("-n", "--input", help="Input fasta file.")
 parser.add_argument("--len_assessment", action='store_true', help="Assess length.")
 parser.add_argument("--no_save", action='store_true', help="Don't save results to pickle files.")
 parser.add_argument("--batch_size", type=int, default=1)
-parser.add_argument("input_fasta", help="Input fasta file.")
 args = parser.parse_args()
 
 DO_ASSESS_LEN = args.len_assessment
@@ -38,11 +38,11 @@ batch_size = args.batch_size
 
 
 # Check if the input fasta file exists
-if not os.path.exists(args.input_fasta) and \
-    not (args.input_fasta.endswith("fasta") or args.input_fasta.endswith("fa")):
+if not os.path.exists(args.input) and \
+    not (args.input.endswith("fasta") or args.input.endswith("fa")):
     logger.error("Invalid input fasta file.")
     exit(1)
-file_path = args.input_fasta
+file_path = args.input
 logger.info('Processing:', file_path)
 # Get the directory containing the input fasta file
 directory = os.path.dirname(os.path.abspath(file_path))
