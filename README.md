@@ -6,6 +6,7 @@ The implementation is based on [esm2_uilities from mnielLab](https://github.com/
 * Set up a conda environment by using environment.yml and activate the environment.
 ```bash
 conda env create -f environment.yml -n esm2
+conda activate esm2
 ```
 * Clone this repository.
 ```bash
