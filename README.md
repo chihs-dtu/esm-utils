@@ -15,7 +15,10 @@ git clone https://github.com/chihs-dtu/esm-utils.git
 ```bash
 bash test.sh
 ```
-
+* Run with your data.
+```bash
+python run.py --input $PATH_TO_YOUR_DATA(.fasta)
+```
 ## Load JSON file into R
 ```R
 library(jsonlite)
