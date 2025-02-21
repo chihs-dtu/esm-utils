@@ -50,7 +50,8 @@ def get_esm2_encs(data):
         if batch_token[0] == alphabet.cls_idx and (batch_token[-1] == alphabet.eos_idx or batch_token[-1] == alphabet.padding_idx):
             sequence_representations.append(token_representations[i, 1 : tokens_len - 1])
             # Average the attention weight for each row afer removing padding, start, and end tokens
-            attentions.append(att_cross_head[1:tokens_len-1, 1:tokens_len-1].mean(dim=0)) 
+            # attentions.append(att_cross_head[1:tokens_len-1, 1:tokens_len-1].mean(dim=0)) 
+            attentions.append(att_cross_head[1:tokens_len-1, 1:tokens_len-1]) 
             
         # if not just add as is             
         else: sequence_representations.append(token_representations[i, :, :])
